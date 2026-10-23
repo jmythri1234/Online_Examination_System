@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | ExamPro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f6f7fb;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo {
+            color: #5546e8;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #5546e8;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .welcome {
+            padding: 32px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #5546e8, #8175f2);
+            color: white;
+            margin-bottom: 35px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            line-height: 1.7;
+            opacity: 0.92;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 23px;
+        }
+
+        .history-link {
+            color: #5546e8;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .exam-card {
+            padding: 25px;
+            background: white;
+            border: 1px solid #e9eaf2;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.03);
+        }
+
+        .exam-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .exam-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .exam-card p {
+            color: #667085;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .duration {
+            color: #5546e8;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .start-button {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #5546e8;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            padding: 35px;
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            color: #667085;
+            line-height: 1.8;
+        }
+
+        .history-section {
+            margin-top: 45px;
+        }
+
+        .history-card {
+            padding: 20px;
+            background: white;
+            border: 1px solid #e9eaf2;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .history-card strong {
+            font-size: 17px;
+        }
+
+        .history-card p {
+            color: #667085;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .score {
+            color: #16803d;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 18px 5%;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 16px;
+            }
+
+            .welcome {
+                padding: 25px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">ExamPro.</div>
+        <a href="{{ url_for('logout') }}">Logout ↗</a>
+    </nav>
+
+    <main class="container">
+
+        <section class="welcome">
+            <h1>Welcome, {{ current_user.name }}! 👋</h1>
+            <p>
+                Ready to test your knowledge? Explore available examinations
+                and review your performance from your dashboard.
+            </p>
+        </section>
+
+        <div class="section-heading">
+            <h2>Available Examinations</h2>
+        </div>
+
+        {% if exams %}
+            <div class="exam-grid">
+                {% for exam in exams %}
+                    <article class="exam-card">
+                        <div class="exam-icon">📝</div>
+
+                        <h3>{{ exam.title }}</h3>
+
+                        <p>
+                            {{ exam.description or 'Test your knowledge with this examination.' }}
+                        </p>
+
+                        <div class="duration">
+                            ⏱️ {{ exam.duration }} minutes
+                        </div>
+
+                        <a href="{{ url_for('start_exam', exam_id=exam.id) }}"
+                         class="start-button">
+                        ▶ Start Exam
+                        </a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No examinations available yet.</h3>
+                <p>
+                    Your administrator has not created any exams.
+                    Please check back later.
+                </p>
+            </div>
+        {% endif %}
+
+        <section class="history-section">
+            <div class="section-heading">
+                <h2>Recent Exam Attempts</h2>
+                <a class="history-link"
+                   href="{{ url_for('exam_history') }}">
+                    View History →
+                </a>
+            </div>
+
+            {% if attempts %}
+                {% for attempt in attempts %}
+                    <div class="history-card">
+                        <strong>
+                            {% set exam = attempt.exam_id %}
+                            Exam #{{ exam }}
+                        </strong>
+
+                        <p>
+                            Score:
+                            <span class="score">
+                                {{ attempt.score }} / {{ attempt.total_questions }}
+                            </span>
+                        </p>
+
+                        <p>
+                            {% if attempt.submitted_at %}
+                                Submitted:
+                                {{ attempt.submitted_at.strftime('%d %b %Y, %I:%M %p') }}
+                            {% else %}
+                                Status: In progress
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    You haven't attempted any examinations yet.
+                </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+</body>
+</html>

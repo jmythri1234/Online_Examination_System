@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Exam History | ExamPro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f6f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: white;
+            padding: 20px 7%;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            color: #5546e8;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #697386;
+        }
+
+        .history-card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            border: 1px solid #e9eaf2;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.03);
+        }
+
+        .history-card h2 {
+            color: #5546e8;
+            margin-bottom: 15px;
+            font-size: 21px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail {
+            background: #f8f8fc;
+            padding: 14px;
+            border-radius: 9px;
+        }
+
+        .detail span {
+            display: block;
+            color: #697386;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .detail strong {
+            font-size: 16px;
+        }
+
+        .score {
+            color: #16803d;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 14px;
+            border: 1px solid #e9eaf2;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #697386;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #5546e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background: #4338ca;
+        }
+
+        @media (max-width: 600px) {
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .history-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ExamPro.</div>
+</header>
+
+<main class="container">
+
+    <section class="page-header">
+        <h1>📚 Exam History</h1>
+        <p>View your previous examination results and scores.</p>
+    </section>
+
+    {% if attempts %}
+
+        {% for attempt in attempts %}
+
+            <section class="history-card">
+
+                <h2>
+                    {{ attempt.exam.title if attempt.exam else 'Examination' }}
+                </h2>
+
+                <div class="details">
+
+                    <div class="detail">
+                        <span>Score</span>
+                        <strong class="score">
+                            {{ attempt.score }} /
+                            {{ attempt.total_questions }}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>Percentage</span>
+                        <strong>
+                            {% if attempt.total_questions > 0 %}
+                                {{ "%.1f"|format(
+                                    attempt.score * 100 /
+                                    attempt.total_questions
+                                ) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>Started At</span>
+                        <strong>
+                            {% if attempt.started_at %}
+                                {{ attempt.started_at.strftime(
+                                    '%d %b %Y, %I:%M %p'
+                                ) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>Submitted At</span>
+                        <strong>
+                            {% if attempt.submitted_at %}
+                                {{ attempt.submitted_at.strftime(
+                                    '%d %b %Y, %I:%M %p'
+                                ) }}
+                            {% else %}
+                                Not submitted
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        {% endfor %}
+
+    {% else %}
+
+        <section class="empty-state">
+            <h2>No Exam History Yet</h2>
+            <p>You haven't completed any examinations yet.</p>
+
+            <a href="{{ url_for('dashboard') }}" class="button">
+                Go to Dashboard
+            </a>
+        </section>
+
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}" class="button">
+        ← Back to Dashboard
+    </a>
+
+</main>
+
+</body>
+</html>

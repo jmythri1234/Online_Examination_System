@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Proctoring Logs | ExamPro</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #eef2ff;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <a class="back" href="{{ url_for('admin_dashboard') }}">
+            ← Back to Admin Dashboard
+        </a>
+
+        <h1>🛡️ Proctoring Logs</h1>
+
+        <p class="subtitle">
+            Review recorded exam tab-switch events.
+        </p>
+
+        <div class="card">
+
+            {% if events %}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Student Name</th>
+                        <th>Exam Name</th>
+                        <th>Attempt ID</th>
+                        <th>Event Type</th>
+                        <th>Details</th>
+                        <th>Event Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event.id }}</td>
+
+                        <td>{{ event.student_name }}</td>
+
+                        <td>{{ event.exam_name }}</td>
+
+                        <td>{{ event.attempt_id }}</td>
+
+                        <td>
+                            <span class="badge">
+                                {{ event.event_type }}
+                            </span>
+                        </td>
+
+                        <td>{{ event.details or "No details" }}</td>
+
+                        <td>
+                            {{ event.created_at.strftime("%d-%m-%Y %I:%M:%S %p") if event.created_at else "N/A" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+
+            <div class="empty">
+                No proctoring events have been recorded yet.
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</body>
+</html>

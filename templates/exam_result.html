@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Exam Result | ExamPro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f6f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: white;
+            padding: 20px 7%;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            color: #5546e8;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e9eaf2;
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #5546e8;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #667085;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border: 8px solid #5546e8;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 25px;
+        }
+
+        .score-circle strong {
+            font-size: 35px;
+            color: #5546e8;
+        }
+
+        .score-circle span {
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .details {
+            background: #f8f8fc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .details p {
+            padding: 8px 0;
+            line-height: 1.6;
+        }
+
+        .details strong {
+            color: #172033;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 22px;
+            margin: 5px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .primary {
+            background: #5546e8;
+            color: white;
+        }
+
+        .secondary {
+            background: #eeebff;
+            color: #5546e8;
+        }
+
+        @media (max-width: 500px) {
+            .result-card {
+                padding: 30px 18px;
+            }
+
+            .container {
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">ExamPro.</div>
+</nav>
+
+<main class="container">
+
+    <section class="result-card">
+
+        <div class="result-icon">🎉</div>
+
+        <h1>Exam Submitted!</h1>
+
+        <p class="subtitle">
+            You have successfully submitted
+            <strong>{{ exam.title }}</strong>.
+        </p>
+
+        {% set percentage = (
+            (attempt.score / attempt.total_questions * 100)
+            if attempt.total_questions > 0 else 0
+        ) %}
+
+        <div class="score-circle">
+            <strong>{{ "%.0f"|format(percentage) }}%</strong>
+            <span>Your Score</span>
+        </div>
+
+        <div class="details">
+
+            <p>
+                <strong>Examination:</strong>
+                {{ exam.title }}
+            </p>
+
+            <p>
+                <strong>Correct Answers:</strong>
+                {{ attempt.score }}
+            </p>
+
+            <p>
+                <strong>Total Questions:</strong>
+                {{ attempt.total_questions }}
+            </p>
+
+            <p>
+                <strong>Incorrect / Unanswered:</strong>
+                {{ attempt.total_questions - attempt.score }}
+            </p>
+
+            <p>
+                <strong>Submitted At:</strong>
+                {{ attempt.submitted_at.strftime('%d %b %Y, %I:%M %p') }}
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('dashboard') }}"
+           class="button primary">
+            ← Dashboard
+        </a>
+
+        <a href="{{ url_for('exam_history') }}"
+           class="button secondary">
+            View History
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+</html>

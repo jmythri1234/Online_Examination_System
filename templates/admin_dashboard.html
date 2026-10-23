@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | ExamPro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f6f7fb;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo {
+            color: #5546e8;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        nav a {
+            color: #5546e8;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        nav a:hover {
+            color: #3728c7;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .welcome {
+            padding: 32px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #5546e8, #8175f2);
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            margin-bottom: 12px;
+            font-size: 30px;
+        }
+
+        .welcome p {
+            line-height: 1.7;
+            margin-top: 15px;
+        }
+
+        .create-btn {
+            display: inline-block;
+            background: white;
+            color: #4338ca;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .create-btn:hover {
+            background: #eeebff;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9eaf2;
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.03);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(30, 41, 59, 0.08);
+        }
+
+        .stat-card p {
+            color: #667085;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-card h2 {
+            color: #5546e8;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #5546e8;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .stat-link:hover {
+            color: #3728c7;
+            text-decoration: underline;
+        }
+
+        .section {
+            background: white;
+            border: 1px solid #e9eaf2;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.02);
+        }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        .chart-card {
+            background: #fafaff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9eaf2;
+            min-width: 0;
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf0f5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f7f6ff;
+            color: #5546e8;
+            font-weight: 700;
+        }
+
+        tbody tr:hover {
+            background: #fafaff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #eeebff;
+            color: #5546e8;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            background: #5546e8;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 12px;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #3728c7;
+        }
+
+        .empty {
+            color: #667085;
+            padding: 15px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1000px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 15px;
+                margin-top: 25px;
+            }
+
+            .welcome {
+                padding: 25px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+
+            nav {
+                padding: 18px 5%;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .chart-container {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">ExamPro.</div>
+        <a href="{{ url_for('logout') }}">Logout ↗</a>
+    </nav>
+
+    <main class="container">
+
+        <!-- Welcome Section -->
+        <section class="welcome">
+
+            <h1>Admin Dashboard 🛡️</h1>
+
+            <p>
+                Welcome, {{ current_user.name }}!<br>
+                Manage students, examinations, exam attempts,
+                and review proctoring activity from one place.
+            </p>
+
+            <a href="{{ url_for('create_exam') }}" class="create-btn">
+                + Create Exam
+            </a>
+
+        </section>
+
+        <!-- Basic Analytics -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>👨‍🎓 Total Students</p>
+                <h2>{{ total_students }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>📝 Total Examinations</p>
+                <h2>{{ total_exams }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>📋 Total Exam Attempts</p>
+                <h2>{{ total_attempts }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>⚠️ Proctoring Events</p>
+                <h2>{{ total_proctoring_events }}</h2>
+
+                <a
+                    href="{{ url_for('admin_proctoring_logs') }}"
+                    class="stat-link"
+                >
+                    View Proctoring Logs →
+                </a>
+            </div>
+
+        </section>
+
+        <!-- Exam Performance Analytics -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>📊 Average Score</p>
+                <h2>{{ average_score }}%</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>🏆 Highest Score</p>
+                <h2>{{ highest_score }}%</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>✅ Pass Count</p>
+                <h2>{{ pass_count }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>❌ Fail Count</p>
+                <h2>{{ fail_count }}</h2>
+            </div>
+
+        </section>
+
+        <!-- Visual Analytics -->
+        <section class="section">
+
+            <h2>📊 Visual Analytics</h2>
+
+            <div class="chart-grid">
+
+                <!-- Pass vs Fail Chart -->
+                <div class="chart-card">
+
+                    <h3>Pass vs Fail</h3>
+
+                    <div class="chart-container">
+                        <canvas id="passFailChart"></canvas>
+                    </div>
+
+                </div>
+
+                <!-- Exam Performance Chart -->
+                <div class="chart-card">
+
+                    <h3>Exam-wise Average Score</h3>
+
+                    <div class="chart-container">
+                        <canvas id="examPerformanceChart"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Registered Users -->
+        <section class="section">
+
+            <h2>👥 Registered Users</h2>
+
+            {% if users %}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <span class="role">
+                                        {{ user.role | title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty">No registered users found.</p>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Examinations -->
+        <section class="section">
+
+            <h2>📝 Examinations</h2>
+
+            {% if exams %}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Exam Title</th>
+                            <th>Duration</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for exam in exams %}
+                            <tr>
+                                <td>{{ exam.id }}</td>
+                                <td>{{ exam.title }}</td>
+                                <td>{{ exam.duration }} minutes</td>
+
+                                <td>
+                                    {% if exam.created_at %}
+                                        {{ exam.created_at.strftime('%d %b %Y') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a
+                                        href="{{ url_for('add_question', exam_id=exam.id) }}"
+                                        class="action-btn"
+                                    >
+                                        + Add Question
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty">
+                    No examinations created yet.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Exam Attempts -->
+        <section class="section">
+
+            <h2>📋 Exam Attempts</h2>
+
+            {% if attempts %}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Attempt ID</th>
+                            <th>Student ID</th>
+                            <th>Exam ID</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for attempt in attempts %}
+                            <tr>
+                                <td>{{ attempt.id }}</td>
+                                <td>{{ attempt.student_id }}</td>
+                                <td>{{ attempt.exam_id }}</td>
+
+                                <td>
+                                    {{ attempt.score }} /
+                                    {{ attempt.total_questions }}
+                                </td>
+
+                                <td>
+                                    {{ 'Submitted' if attempt.submitted_at else 'In Progress' }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty">
+                    No exam attempts available yet.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        © 2026 ExamPro — Administration Panel
+    </footer>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Pass vs Fail Chart
+        const passFailCanvas =
+            document.getElementById("passFailChart");
+
+        new Chart(passFailCanvas, {
+            type: "doughnut",
+
+            data: {
+                labels: ["Pass", "Fail"],
+
+                datasets: [{
+                    data: [
+                        {{ pass_count | tojson }},
+                        {{ fail_count | tojson }}
+                    ],
+
+                    backgroundColor: [
+                        "#16a34a",
+                        "#ef4444"
+                    ],
+
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+
+        // Exam-wise Average Score Chart
+        const examPerformanceCanvas =
+            document.getElementById("examPerformanceChart");
+
+        new Chart(examPerformanceCanvas, {
+            type: "bar",
+
+            data: {
+                labels: [
+                    {% for item in exam_performance %}
+                        {{ item.title | tojson }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+
+                datasets: [{
+                    label: "Average Score (%)",
+
+                    data: [
+                        {% for item in exam_performance %}
+                            {{ item.average | tojson }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+
+                    backgroundColor: "#8175f2",
+                    borderRadius: 6
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+
+                        title: {
+                            display: true,
+                            text: "Percentage (%)"
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

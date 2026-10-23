@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ exam.title }} | ExamPro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f6f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: white;
+            padding: 20px 7%;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            color: #5546e8;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .exam-header {
+            background: linear-gradient(120deg, #5546e8, #8175f2);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .exam-header h1 {
+            margin-bottom: 12px;
+        }
+
+        .exam-header p {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        .timer {
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+            background: #172033;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 22px;
+        }
+
+        /* Proctoring camera section */
+        .proctoring-box {
+            background: white;
+            padding: 22px;
+            margin-bottom: 22px;
+            border: 1px solid #e9eaf2;
+            border-radius: 14px;
+        }
+
+        .proctoring-box h2 {
+            margin-bottom: 12px;
+            color: #5546e8;
+        }
+
+        .proctoring-box p {
+            color: #697386;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .camera-button {
+            padding: 12px 18px;
+            background: #5546e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .camera-button:hover {
+            background: #4338ca;
+        }
+
+        .camera-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #cameraStatus {
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        #cameraPreview {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            margin-top: 15px;
+            border-radius: 10px;
+            background: #172033;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e9eaf2;
+            border-radius: 14px;
+        }
+
+        .question-card h3 {
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .option {
+            display: block;
+            padding: 13px;
+            margin: 10px 0;
+            background: #f8f8fc;
+            border: 1px solid #e9eaf2;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #eeebff;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: #5546e8;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 35px;
+        }
+
+        .submit-button:hover {
+            background: #4338ca;
+        }
+
+        .submit-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .exam-header {
+                padding: 22px;
+            }
+
+            .question-card {
+                padding: 18px;
+            }
+
+            .proctoring-box {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ExamPro.</div>
+</header>
+
+<main class="container">
+
+    <section class="exam-header">
+        <h1>{{ exam.title }}</h1>
+
+        <p>
+            {{ exam.description or 'Answer all questions carefully.' }}
+        </p>
+
+        <p>⏱️ Duration: {{ exam.duration }} minutes</p>
+        <p>📝 Total Questions: {{ questions | length }}</p>
+    </section>
+
+    <div class="timer">
+        Time Remaining: <span id="timer">Loading...</span>
+    </div>
+
+    <!-- Camera permission and preview -->
+    <section class="proctoring-box">
+        <h2>📷 Exam Proctoring</h2>
+
+        <p>
+            This initial camera test only displays a live preview.
+            Video is not recorded or uploaded. Camera access is optional
+            for this test version.
+        </p>
+
+        <button
+            type="button"
+            id="cameraButton"
+            class="camera-button">
+            Enable Camera
+        </button>
+
+        <p id="cameraStatus" role="status" aria-live="polite">
+            Camera has not been started.
+        </p>
+
+        <video
+            id="cameraPreview"
+            autoplay
+            muted
+            playsinline>
+        </video>
+    </section>
+
+    <form
+        id="examForm"
+        method="POST"
+        action="{{ url_for('submit_exam', exam_id=exam.id) }}">
+
+        <input
+            type="hidden"
+            name="attempt_id"
+            value="{{ attempt.id }}">
+
+        {% for question in questions %}
+
+            <section class="question-card">
+
+                <h3>
+                    Question {{ loop.index }}:
+                    {{ question.question_text }}
+                </h3>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="A">
+                    A. {{ question.option_a }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="B">
+                    B. {{ question.option_b }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="C">
+                    C. {{ question.option_c }}
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="D">
+                    D. {{ question.option_d }}
+                </label>
+
+            </section>
+
+        {% endfor %}
+
+        <button
+            type="submit"
+            id="submitButton"
+            class="submit-button">
+            Submit Exam
+        </button>
+
+    </form>
+
+</main>
+
+<script>
+    // ---------------- EXAM TIMER ----------------
+
+    let remainingSeconds = {{ remaining_seconds | int }};
+
+    const timerElement = document.getElementById("timer");
+    const examForm = document.getElementById("examForm");
+    const submitButton = document.getElementById("submitButton");
+
+    let submitted = false;
+
+    function updateTimer() {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+
+        timerElement.textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
+        if (remainingSeconds <= 0) {
+            timerElement.textContent = "00:00";
+
+            if (!submitted) {
+                submitted = true;
+                submitButton.disabled = true;
+
+                alert("Time is up! Your exam will be submitted.");
+
+                HTMLFormElement.prototype.submit.call(examForm);
+            }
+
+            return;
+        }
+
+        remainingSeconds--;
+    }
+
+    examForm.addEventListener("submit", function(event) {
+        if (submitted) {
+            event.preventDefault();
+            return;
+        }
+
+        event.preventDefault();
+
+        if (confirm("Are you sure you want to submit your exam?")) {
+            submitted = true;
+            submitButton.disabled = true;
+
+            HTMLFormElement.prototype.submit.call(examForm);
+        }
+    });
+
+    updateTimer();
+
+    const timerInterval = setInterval(function() {
+        updateTimer();
+
+        if (remainingSeconds <= 0 || submitted) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+
+
+    // ---------------- CAMERA TEST ----------------
+
+    const cameraButton = document.getElementById("cameraButton");
+    const cameraStatus = document.getElementById("cameraStatus");
+    const cameraPreview = document.getElementById("cameraPreview");
+
+    let cameraStream = null;
+
+    cameraButton.addEventListener("click", async function() {
+        cameraButton.disabled = true;
+        cameraStatus.textContent = "Requesting camera permission...";
+
+        try {
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+                throw new Error(
+                    "Camera access is not supported in this browser or connection."
+                );
+            }
+
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+
+            cameraPreview.srcObject = cameraStream;
+            cameraPreview.style.display = "block";
+
+            cameraStatus.textContent =
+                "Camera is active. Video is not being recorded or uploaded.";
+
+            cameraButton.textContent = "Camera Enabled";
+
+        } catch (error) {
+            cameraStatus.textContent =
+                "Camera access was unavailable or denied. " +
+                "Check browser permission and try again if you wish.";
+
+            cameraButton.disabled = false;
+        }
+    });
+
+
+    // ---------------- STOP CAMERA ----------------
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(function(track) {
+                track.stop();
+            });
+
+            cameraStream = null;
+            cameraPreview.srcObject = null;
+        }
+    }
+
+    // Stop the camera when the exam page is being left.
+    window.addEventListener("pagehide", stopCamera);
+
+    // Stop the camera when the exam is submitted.
+    examForm.addEventListener("submit", function() {
+        stopCamera();
+    });
+</script>
+
+//Tab Switch Detection
+
+<script>
+    let tabSwitchWarningCount = 0;
+
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            tabSwitchWarningCount++;
+
+            // Show a warning to the student
+            alert(
+                "⚠️ Proctoring Warning!\n\n" +
+                "You switched away from the exam tab.\n" +
+                "Tab switches detected: " + tabSwitchWarningCount +
+                "\nPlease stay on the exam page."
+            );
+
+            // Save the event in the database
+            const attemptInput = document.querySelector(
+                'input[name="attempt_id"]'
+            );
+
+            if (!attemptInput) {
+                console.error("Exam attempt ID was not found.");
+                return;
+            }
+
+            fetch("/proctoring/event", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    attempt_id: attemptInput.value,
+                    event_type: "tab_switch"
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        "Failed to save the proctoring event."
+                    );
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log("Proctoring event:", data);
+            })
+            .catch(error => {
+                console.error("Proctoring error:", error);
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
