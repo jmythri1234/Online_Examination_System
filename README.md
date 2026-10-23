@@ -15,40 +15,40 @@ A web-based examination platform developed using Python and Flask to manage onli
 
 🛠️ Tech Stack
 
-Technology| Purpose
-Python| Core programming language
-Flask| Web application framework
-SQLite| Database
-Flask-SQLAlchemy| Database integration
-Flask-Login| User authentication
-HTML & CSS| Web page structure and styling
-JavaScript| Client-side functionality
-Chart.js| Performance analytics and charts
-OpenCV| Camera-related functionality
+## Technology| Purpose
+## Python| Core programming language
+## Flask| Web application framework
+## SQLite| Database
+## Flask-SQLAlchemy| Database integration
+## Flask-Login| User authentication
+## HTML & CSS| Web page structure and styling
+## JavaScript| Client-side functionality
+## Chart.js| Performance analytics and charts
+## OpenCV| Camera-related functionality
 
 📂 Project Structure
 
-ExamPro/
-├── app.py
-├── requirements.txt
-├── .gitignore
-├── static/
-│   └── css/
-│       ├── style.css
-│       └── exam.js
-├── templates/
-│   ├── add_question.html
-│   ├── admin_dashboard.html
-│   ├── create_exam.html
-│   ├── exam_history.html
-│   ├── exam_result.html
-│   ├── index.html
-│   ├── login.html
-│   ├── proctoring_logs.html
-│   ├── register.html
-│   ├── student_dashboard.html
-│   └── take_exam.html
-└── screenshots/
+## ExamPro/
+# ├── app.py
+# ├── requirements.txt
+# ├── .gitignore
+# ├── static/
+# │   └── css/
+# │       ├── style.css
+# │       └── exam.js
+# ├── templates/
+# │   ├── add_question.html
+# │   ├── admin_dashboard.html
+# │   ├── create_exam.html
+# │   ├── exam_history.html
+# │   ├── exam_result.html
+# │   ├── index.html
+# │   ├── login.html
+# │   ├── proctoring_logs.html
+# │   ├── register.html
+# │   ├── student_dashboard.html
+# │   └── take_exam.html
+# └── screenshots/
 
 ⚙️ Installation & Setup
 
