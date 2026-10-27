@@ -15,47 +15,47 @@ A web-based examination platform developed using Python and Flask to manage onli
 
 🛠️ Tech Stack
 
-## Technology| Purpose
-## Python| Core programming language
-## Flask| Web application framework
-## SQLite| Database
-## Flask-SQLAlchemy| Database integration
-## Flask-Login| User authentication
-## HTML & CSS| Web page structure and styling
-## JavaScript| Client-side functionality
-## Chart.js| Performance analytics and charts
-## OpenCV| Camera-related functionality
+Technology| Purpose
+Python| Core programming language
+Flask| Web application framework
+SQLite| Database
+Flask-SQLAlchemy| Database integration
+Flask-Login| User authentication
+HTML & CSS| Web page structure and styling
+JavaScript| Client-side functionality
+Chart.js| Performance analytics and charts
+OpenCV| Camera-related functionality
 
 📂 Project Structure
 
-## ExamPro/
-# ├── app.py
-# ├── requirements.txt
-# ├── .gitignore
-# ├── static/
-# │   └── css/
-# │       ├── style.css
-# │       └── exam.js
-# ├── templates/
-# │   ├── add_question.html
-# │   ├── admin_dashboard.html
-# │   ├── create_exam.html
-# │   ├── exam_history.html
-# │   ├── exam_result.html
-# │   ├── index.html
-# │   ├── login.html
-# │   ├── proctoring_logs.html
-# │   ├── register.html
-# │   ├── student_dashboard.html
-# │   └── take_exam.html
-# └── screenshots/
+ExamPro/
+├── app.py
+├── requirements.txt
+├── .gitignore
+├── static/
+│   └── css/
+│       ├── style.css
+│       └── exam.js
+├── templates/
+│   ├── add_question.html
+│   ├── admin_dashboard.html
+│   ├── create_exam.html
+│   ├── exam_history.html
+│   ├── exam_result.html
+│   ├── index.html
+│   ├── login.html
+│   ├── proctoring_logs.html
+│   ├── register.html
+│   ├── student_dashboard.html
+│   └── take_exam.html
+└── screenshots/
 
 ⚙️ Installation & Setup
 
 1. Clone the repository
 
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd ExamPro
+git clone https://github.com/jmythri1234/Online_Examination_System.git
+cd Online_Examination_System
 
 2. Create a virtual environment
 
@@ -65,7 +65,7 @@ python -m venv venv
 
 Windows:
 
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 
 4. Install dependencies
 
@@ -79,18 +79,23 @@ Open your browser and visit:
 
 "http://127.0.0.1:5000"
 
-«Replace "YOUR_GITHUB_REPOSITORY_URL" with your actual GitHub repository URL.»
-
 📸 Screenshots
 
-## Home Page
-## Admin Dashboard & Analytics
-## "Admin Dashboard"(Screenshots)
-## Student Dashboard
-## "Student Dashboard"(Screenshots)
-## Online Examination
-## Exam Result
-## Exam History
+Home Page
+
+Admin Dashboard & Analytics
+
+Admin Dashboard (Screenshots)
+
+Student Dashboard
+
+Student Dashboard (Screenshots)
+
+Online Examination
+
+Exam Result
+
+Exam History
 
 🔒 Security & Privacy
 
